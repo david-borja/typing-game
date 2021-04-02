@@ -41,6 +41,15 @@ let score = 0;
 // Init time
 let time = 10;
 
+// Set difficulty to value in ls or medium
+let difficulty =
+  localStorage.getItem("difficulty") !== null
+    ? localStorage.getItem("difficulty")
+    : "medium";
+
+// Set difficulty select value
+difficultySelect.value = difficulty;
+
 // Focus on text on start
 text.focus();
 
@@ -67,9 +76,9 @@ function updateScore() {
 // Update time
 function updateTime() {
   time--;
-  timeEl.innerHTML = time + 's';
+  timeEl.innerHTML = time + "s";
 
-  if(time === 0) {
+  if (time === 0) {
     clearInterval(timeInterval);
     // end game
     gameOver();
@@ -84,11 +93,14 @@ function gameOver() {
     <button onclick="location.reload()">Reload</button>
   `;
 
-  endgameEl.style.display = 'flex';
+  endgameEl.style.display = "flex";
 }
 
 addWordToDOM();
 
+// Event listeners
+
+// Typing
 text.addEventListener("input", (e) => {
   const insertedText = e.target.value;
 
@@ -99,9 +111,24 @@ text.addEventListener("input", (e) => {
     // Clear
     e.target.value = "";
 
-    time += 5;
+    if (difficulty === "hard") {
+      time += 2;
+    } else if (difficulty === "medium") {
+      time += 3;
+    } else {
+      time += 5;
+    }
 
     updateTime();
     /* text.value = "" this would have been my try */
   }
+});
+
+// Settings btn click
+settingsBtn.addEventListener("click", () => settings.classList.toggle("hide"));
+
+// Settings select
+settingsForm.addEventListener("change", (e) => {
+  difficulty = e.target.value;
+  localStorage.setItem("difficulty", difficulty);
 });
